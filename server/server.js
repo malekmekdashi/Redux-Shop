@@ -2,11 +2,11 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
 const { authMiddleware } = require('./utils/auth');
-const cors = require('cors');
+
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
-
-const PORT = process.env.PORT || 8080;
+const cors = require('cors');
+const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
   typeDefs,
@@ -14,7 +14,12 @@ const server = new ApolloServer({
   context: authMiddleware,
 });
 
-app.use(cors())
+app.use(
+  cors({
+      origin: "http://localhost:3001", 
+      credentials: true,
+  })
+);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
