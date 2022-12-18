@@ -5,7 +5,7 @@ const { authMiddleware } = require('./utils/auth');
 
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
-const cors = require('cors');
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
@@ -14,12 +14,6 @@ const server = new ApolloServer({
   context: authMiddleware,
 });
 
-app.use(
-  cors({
-      origin: "http://localhost:3001", 
-      credentials: true,
-  })
-);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -35,6 +29,10 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
+app.get("/", (req, res) => {
+     res.header("Access-Control-Allow-Origin", "http://localhost:3001"); // update to match the domain you will make the request from
+     res.send(response.data)
+});
 
 // Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async (typeDefs, resolvers) => {
